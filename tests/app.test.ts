@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../src/app';
 
-jest.mock('../src/core/logger.ts', () => ({
+jest.mock('../src/utils/logger.ts', () => ({
   info: jest.fn(),
 }));
 

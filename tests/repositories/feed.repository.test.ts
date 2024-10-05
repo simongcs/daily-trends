@@ -14,34 +14,37 @@ const mockFeed = {
   _id: 'id1',
 };
 
-jest.mock('../../src/models/feed.model.ts');
+jest.mock('../../src/models/feed.model.ts', () => ({
+  FeedModel: jest.fn(() => ({
+    create: jest.fn(),
+    find: jest.fn(),
+    findById: jest.fn(),
+    findByIdAndDelete: jest.fn(),
+    save: jest.fn(),
+  })),
+}));
 
 describe('Feed repository tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  const feedRepository = new FeedRepository(FeedModel);
+
   describe('create feed', () => {
     it('Should create a feed', async () => {
-      const mockSave = jest.fn().mockResolvedValue(mockFeed);
-      (FeedModel as unknown as jest.Mock).mockImplementation(() => ({
-        save: mockSave,
-      }));
-      const feed = await FeedRepository.createFeed(mockFeed);
+      FeedModel.create = jest.fn().mockResolvedValue(mockFeed);
 
-      expect(mockSave).toHaveBeenCalledTimes(1);
+      const feed = await feedRepository.createFeed(mockFeed);
+
+      expect(FeedModel.create).toHaveBeenCalledTimes(1);
       expect(feed).toMatchObject(mockFeed);
     });
     it('Should throw an error if feed creation fails', async () => {
-      //   const err = new FeedCreationError('test');
-      const mockSave = jest.fn().mockRejectedValue(new Error('test'));
-      (FeedModel as unknown as jest.Mock).mockImplementation(() => ({
-        save: mockSave,
-      }));
+      FeedModel.create = jest.fn().mockRejectedValue(new Error('test'));
 
-      const feedData: Partial<IFeed> = { title: 'Test Feed' };
-      await expect(() => FeedRepository.createFeed(feedData)).rejects.toThrow(
-        new FeedCreationError('test'),
-      );
+      await expect(() =>
+        feedRepository.createFeed({} as Partial<IFeed>),
+      ).rejects.toThrow(new FeedCreationError('test'));
     });
   });
 
@@ -53,7 +56,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.find = mockFind;
 
-      const feeds = await FeedRepository.getFeeds();
+      const feeds = await feedRepository.getFeeds();
 
       expect(mockFind).toHaveBeenCalledTimes(1);
       expect(feeds).toHaveLength(1);
@@ -76,7 +79,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.find = mockFind;
 
-      await expect(FeedRepository.getFeeds()).rejects.toThrow(
+      await expect(feedRepository.getFeeds()).rejects.toThrow(
         new FeedRetrievalError('test'),
       );
     });
@@ -89,7 +92,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.findById = mockFindById;
 
-      const feed = await FeedRepository.getFeedById(mockFeed._id);
+      const feed = await feedRepository.getFeedById(mockFeed._id);
 
       expect(mockFindById).toHaveBeenCalledTimes(1);
       expect(feed).toMatchObject(mockFeed);
@@ -101,7 +104,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.findById = mockFindById;
 
-      await expect(FeedRepository.getFeedById('')).rejects.toThrow(
+      await expect(feedRepository.getFeedById('')).rejects.toThrow(
         new FeedRetrievalError('test'),
       );
     });
@@ -116,7 +119,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.findByIdAndDelete = mockFindByIdAndDelete;
 
-      const feed = await FeedRepository.deleteFeed(mockFeed._id);
+      const feed = await feedRepository.deleteFeed(mockFeed._id);
 
       expect(mockFindByIdAndDelete).toHaveBeenCalledTimes(1);
       expect(feed).toEqual({
@@ -130,7 +133,7 @@ describe('Feed repository tests', () => {
       });
       FeedModel.findByIdAndDelete = mockFindByIdAndDelete;
 
-      await expect(FeedRepository.deleteFeed('')).rejects.toThrow(
+      await expect(feedRepository.deleteFeed('')).rejects.toThrow(
         new FeedDeletionError('test'),
       );
     });

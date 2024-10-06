@@ -5,6 +5,6 @@ test:
 start:
 	npm run start
 dbuild:
-	docker compose up -d --build
+	docker compose up -d --build --force-recreate
 clear:
 	rm -rf /dist

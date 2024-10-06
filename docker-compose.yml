@@ -3,10 +3,10 @@ services:
     build: .
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
+    env_file:
+      - .env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/dailytrends
+      - DB_CONNECTION_STRING=mongodb://mongo:27017/dailytrends
     depends_on:
       - mongo
     command: npm run start

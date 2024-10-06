@@ -4,7 +4,8 @@
   "description": "Daily Trends: newsfeed",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env dist/server.js",
+    "start:dev": "node --env-file=.env dist/server.js",
+    "start": "node dist/server.js",
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint 'src/**/*.{ts,js}'",

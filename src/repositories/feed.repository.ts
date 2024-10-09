@@ -21,6 +21,15 @@ class FeedRepository {
     }
   }
 
+  public async bulkCreateFeeds(feeds: IFeed[]): Promise<IFeed[]> {
+    try {
+      const createdFeeds = await this.feedModel.insertMany(feeds);
+      return createdFeeds;
+    } catch (error) {
+      throw new FeedCreationError(error);
+    }
+  }
+
   public async getFeeds(): Promise<IFeed[]> {
     try {
       return await this.feedModel.find().sort({ date: -1 }).exec();

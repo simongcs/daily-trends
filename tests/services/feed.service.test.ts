@@ -2,9 +2,17 @@ import FeedService from '../../src/services/feed.service';
 import FeedRepository from '../../src/repositories/feed.repository';
 import { FeedModel, IFeed } from '../../src/models/feed.model';
 
-// Mock the FeedRepository
 jest.mock('../../src/repositories/feed.repository');
 
+const mockFeed = {
+  title: 'mock feed',
+  link: 'http://test.com',
+  source: 'test source',
+  date: new Date(),
+  _id: 'id1',
+};
+
+const mockFeeds = [mockFeed, { ...mockFeed, title: 'mock feed2' }];
 describe('FeedService', () => {
   let feedService: FeedService;
   let feedRepository: jest.Mocked<FeedRepository>;
@@ -121,6 +129,18 @@ describe('FeedService', () => {
       expect(result).toBeNull();
       expect(feedRepository.deleteFeed).toHaveBeenCalledWith('invalid-id');
       expect(feedRepository.deleteFeed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('bulkCreateFeeds', () => {
+    it('should create multiple feeds', async () => {
+      feedRepository.bulkCreateFeeds.mockResolvedValue(mockFeeds as IFeed[]);
+
+      const result = await feedService.bulkCreateFeeds(mockFeeds as IFeed[]);
+
+      expect(result).toEqual(mockFeeds);
+      expect(feedRepository.bulkCreateFeeds).toHaveBeenCalledTimes(1);
+      expect(feedRepository.bulkCreateFeeds).toHaveBeenCalledWith(mockFeeds);
     });
   });
 });

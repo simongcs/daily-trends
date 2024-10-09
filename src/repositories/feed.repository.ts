@@ -32,7 +32,7 @@ class FeedRepository {
 
   public async getFeeds(): Promise<IFeed[]> {
     try {
-      return await this.feedModel.find().sort({ date: -1 }).exec();
+      return await this.feedModel.find().sort({ date: -1 }).limit(10).exec();
     } catch (error) {
       throw new FeedRetrievalError(error);
     }

@@ -3,10 +3,10 @@ services:
     build: .
     ports:
       - "3000:3000"
-    env_file:
-      - .env
     environment:
       - DB_CONNECTION_STRING=mongodb://mongo:27017/dailytrends
+      - ENV=development
+      - PORT=3000
     depends_on:
       - mongo
     command: npm run start

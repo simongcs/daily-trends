@@ -14,6 +14,8 @@ const mockFeed = {
   _id: 'id1',
 };
 
+const mockFeeds = [mockFeed, { ...mockFeed, title: 'mock feed2' }];
+
 jest.mock('../../src/models/feed.model.ts', () => ({
   FeedModel: jest.fn(() => ({
     create: jest.fn(),
@@ -136,6 +138,28 @@ describe('Feed repository tests', () => {
       await expect(feedRepository.deleteFeed('')).rejects.toThrow(
         new FeedDeletionError('test'),
       );
+    });
+  });
+
+  describe('bulkCreateFeeds', () => {
+    it('should create multiple feeds', async () => {
+      FeedModel.insertMany = jest.fn().mockResolvedValue(mockFeeds);
+
+      const result = await feedRepository.bulkCreateFeeds(mockFeeds as IFeed[]);
+
+      expect(result).toEqual(mockFeeds);
+      expect(FeedModel.insertMany).toHaveBeenCalledTimes(1);
+      expect(FeedModel.insertMany).toHaveBeenCalledWith(mockFeeds);
+    });
+
+    it('should throw an error if feed creation fails', async () => {
+      FeedModel.insertMany = jest
+        .fn()
+        .mockRejectedValue(new Error('Test error'));
+
+      await expect(
+        feedRepository.bulkCreateFeeds(mockFeeds as IFeed[]),
+      ).rejects.toThrow(new FeedCreationError('Test error'));
     });
   });
 });

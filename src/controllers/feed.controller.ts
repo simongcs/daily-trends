@@ -8,7 +8,6 @@ class FeedController {
     this.feedService = feedService;
   }
 
-  // Fetch all feeds
   public async getFeeds(
     req: Request,
     res: Response,
@@ -22,7 +21,6 @@ class FeedController {
     }
   }
 
-  // Fetch a single feed by ID
   public async getFeedById(
     req: Request,
     res: Response,
@@ -40,7 +38,6 @@ class FeedController {
     }
   }
 
-  // Create a new feed
   public async createFeed(
     req: Request,
     res: Response,
@@ -54,7 +51,6 @@ class FeedController {
     }
   }
 
-  // Delete a feed by ID
   public async deleteFeed(
     req: Request,
     res: Response,

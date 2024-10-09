@@ -16,6 +16,10 @@ class FeedService {
     return await this.feedRepository.createFeed(data);
   }
 
+  public async bulkCreateFeeds(data: IFeed[]): Promise<IFeed[]> {
+    return await this.feedRepository.bulkCreateFeeds(data);
+  }
+
   public async getFeedById(id: string): Promise<IFeed | null> {
     return await this.feedRepository.getFeedById(id);
   }

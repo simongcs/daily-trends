@@ -1,10 +1,16 @@
-build:
+install:
+	npm install
+dev:
+	npm run start:dev
+build-ts:
 	npm run build
 test:
 	npm run test
 start:
 	npm run start
-dbuild:
-	docker compose up -d --build --force-recreate
+build:
+	docker compose build
+run:
+	docker compose up -d
 clear:
 	rm -rf /dist

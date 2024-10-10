@@ -54,6 +54,7 @@ describe('Feed repository tests', () => {
     it('should get feeds', async () => {
       const mockFind = jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue([mockFeed]),
       });
       FeedModel.find = mockFind;
@@ -77,6 +78,7 @@ describe('Feed repository tests', () => {
     it('should throw an error of type FeedRetrievalError', async () => {
       const mockFind = jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockRejectedValue(new Error('test')),
       });
       FeedModel.find = mockFind;

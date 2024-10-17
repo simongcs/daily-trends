@@ -13,7 +13,8 @@ class Database {
     }
 
     try {
-      const connection = mongoose.createConnection(dbUri);
+      const db = await mongoose.connect(dbUri);
+      const connection = db.connection;
 
       Database.connections.set(connectionName, connection);
 

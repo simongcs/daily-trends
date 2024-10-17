@@ -16,9 +16,9 @@ const bootstrapper = new Bootstrapper(scrapingService, feedService);
 
 const startServer = async () => {
   try {
-    await bootstrapper.runOnStartup();
-
     await Database.connect(config.DB_CONNECTION_STRING as string, 'main');
+
+    await bootstrapper.runOnStartup();
 
     app.listen(config.PORT, () => {
       logger.info(`Server running on port ${config.PORT}`);

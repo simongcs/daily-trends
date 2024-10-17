@@ -7,6 +7,7 @@ import ScrapingService from './services/scrapingFeed.service';
 import logger from './utils/logger';
 import feedUrls from './config/feeds';
 import Bootstrapper from './utils/bootstraper';
+import Database from './config/db';
 
 const feedRepository = new FeedRepository(FeedModel);
 const scrapingService = new ScrapingService(feedUrls.map(feed => feed.url));
@@ -15,6 +16,8 @@ const bootstrapper = new Bootstrapper(scrapingService, feedService);
 
 const startServer = async () => {
   try {
+    await Database.connect(config.DB_CONNECTION_STRING as string, 'main');
+
     await bootstrapper.runOnStartup();
 
     app.listen(config.PORT, () => {
@@ -25,5 +28,10 @@ const startServer = async () => {
     process.exit(1); // Exit the process if startup fails
   }
 };
+
+process.on('SIGINT', async () => {
+  await Database.disconnectAll();
+  process.exit(0);
+});
 
 startServer();
